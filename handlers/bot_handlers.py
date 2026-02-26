@@ -1,6 +1,7 @@
 from html import escape
 from io import BytesIO
 from datetime import datetime, timezone
+import logging
 
 from aiogram import F, Router
 from aiogram.exceptions import TelegramBadRequest
@@ -30,6 +31,7 @@ questions_by_mode = {
     "vikriti": [q for q in all_questions if q["mode"] == "vikriti"],
 }
 APP_STARTED_AT = datetime.now(timezone.utc)
+logger = logging.getLogger(__name__)
 
 
 def _format_uptime() -> str:
@@ -142,6 +144,7 @@ def build_router(repo: RedisRepo) -> Router:
 
     @router.message(Command("health"))
     async def cmd_health(message: Message) -> None:
+        logger.info("health_command user_id=%s", message.from_user.id if message.from_user else "unknown")
         redis_ok = True
         redis_error = ""
         try:
@@ -164,6 +167,7 @@ def build_router(repo: RedisRepo) -> Router:
 
     @router.message(CommandStart())
     async def cmd_start(message: Message) -> None:
+        logger.info("start_command user_id=%s", message.from_user.id if message.from_user else "unknown")
         await repo.delete_session(message.from_user.id)
         await repo.create_new_session(message.from_user.id)
 
@@ -183,6 +187,7 @@ def build_router(repo: RedisRepo) -> Router:
     @router.callback_query(F.data.startswith("ans:"))
     async def on_answer(callback: CallbackQuery) -> None:
         dosha = callback.data.split(":", 1)[1]
+        logger.info("answer_click user_id=%s dosha=%s", callback.from_user.id, dosha)
         if dosha not in {"vata", "pitta", "kapha"}:
             await callback.answer("Некорректный выбор", show_alert=True)
             return
@@ -196,6 +201,14 @@ def build_router(repo: RedisRepo) -> Router:
         questions = questions_by_mode[mode]
         idx = session["current_index"]
         question = questions[idx]
+        logger.info(
+            "answer_apply user_id=%s mode=%s index=%s question_id=%s dosha=%s",
+            callback.from_user.id,
+            mode,
+            idx,
+            question["id"],
+            dosha,
+        )
 
         session["answers"][mode][question["id"]] = dosha
 
@@ -204,6 +217,7 @@ def build_router(repo: RedisRepo) -> Router:
                 session["current_mode"] = "vikriti"
                 session["current_index"] = 0
                 await repo.save_session(callback.from_user.id, session)
+                logger.info("step_completed user_id=%s mode=prakriti", callback.from_user.id)
 
                 await callback.answer("Шаг 1 завершен")
                 if callback.message:
@@ -218,6 +232,7 @@ def build_router(repo: RedisRepo) -> Router:
 
             await repo.save_session(callback.from_user.id, session)
             await callback.answer("Тест завершен")
+            logger.info("test_completed user_id=%s", callback.from_user.id)
 
             prakriti_answers = session["answers"]["prakriti"]
             vikriti_answers = session["answers"]["vikriti"]
@@ -297,6 +312,7 @@ def build_router(repo: RedisRepo) -> Router:
 
     @router.callback_query(F.data == "nav:back")
     async def on_back(callback: CallbackQuery) -> None:
+        logger.info("back_click user_id=%s", callback.from_user.id)
         session = await repo.get_session(callback.from_user.id)
         if not session:
             await callback.answer("Сессия не найдена", show_alert=True)
@@ -317,10 +333,17 @@ def build_router(repo: RedisRepo) -> Router:
 
         await repo.save_session(callback.from_user.id, session)
         await callback.answer()
+        logger.info(
+            "back_applied user_id=%s mode=%s index=%s",
+            callback.from_user.id,
+            session["current_mode"],
+            session["current_index"],
+        )
         await send_current_question(callback, repo, callback.from_user.id, edit=True)
 
     @router.callback_query(F.data == "nav:reset")
     async def on_reset(callback: CallbackQuery) -> None:
+        logger.info("reset_click user_id=%s", callback.from_user.id)
         await repo.delete_session(callback.from_user.id)
         await repo.create_new_session(callback.from_user.id)
         await callback.answer("Тест сброшен")
@@ -333,6 +356,7 @@ def build_router(repo: RedisRepo) -> Router:
 
     @router.message()
     async def on_fallback(message: Message) -> None:
+        logger.info("fallback_message user_id=%s", message.from_user.id if message.from_user else "unknown")
         await message.answer("Используйте /start, чтобы начать или перезапустить тест.")
 
     return router
