@@ -1,0 +1,93 @@
+# Dosha Telegram Bot - Рабочая схема проекта
+
+## 1) Что сделано
+- Бот: Telegram (`aiogram`), режим `long polling`.
+- Данные теста: Пракрити + Викрити (2 шага подряд).
+- Хранение прогресса: Redis (Upstash), TTL `24 часа`.
+- Результат: сообщение в Telegram + `.txt` файл.
+- Диагностика: команда `/health`.
+- Логи пользовательских действий включены (`start`, `reset`, `answer`, `back`, completion).
+
+## 2) Структура проекта
+- `bot.py` - запуск приложения
+- `config.py` - чтение env
+- `handlers/bot_handlers.py` - сценарий бота
+- `core/scoring.py` - подсчет
+- `core/export_txt.py` - генерация .txt
+- `storage/redis_repo.py` - Redis-сессии
+- `data/questions.json` - вопросы
+- `render.yaml` - конфиг Render (оставлен как reference)
+
+## 3) Переменные окружения
+- `BOT_TOKEN` - токен Telegram-бота
+- `REDIS_URL` - Redis URL (`rediss://...`)
+- `REDIS_PASSWORD` - пароль, если не встроен в URL
+- `RETENTION_HOURS=24`
+
+## 4) Текущий прод-рантайм
+- Хостинг: Railway
+- База: Upstash Redis
+- Режим: long polling
+
+## 5) Локальный запуск
+```bash
+cd "<путь_к_проекту>"
+source .venv/bin/activate
+python bot.py
+```
+
+## 6) Проверка что работает
+1. В Telegram: `/health`
+2. В Telegram: `/start`
+3. Пройти тест до конца
+4. Проверить итог + `.txt`
+
+## 7) Частые проблемы и решение
+
+### 7.1 TelegramConflictError
+Причина: запущено >1 экземпляра с тем же токеном.
+
+Решение:
+```bash
+pkill -f "bot.py"
+ps ax -o pid=,command= | grep bot.py | grep -v grep
+```
+Оставить только Railway или только локальный запуск.
+
+### 7.2 BOT_TOKEN is required
+Причина: нет переменной в Railway.
+
+Решение:
+- Railway -> Variables -> добавить `BOT_TOKEN` без `=` и без пробелов.
+- Redeploy.
+
+### 7.3 Redis/TLS ошибки
+- Проверить `REDIS_URL` начинается с `rediss://`
+- Проверить корректность `REDIS_PASSWORD` (или пусто, если пароль в URL)
+
+### 7.4 Медленные ответы
+Возможные причины:
+- сеть пользователя
+- задержки free-инфраструктуры (Railway/Upstash)
+- повышенная нагрузка
+
+## 8) Ограничения free-режима
+- лимиты Railway/Upstash по ресурсам/запросам
+- возможные краткие задержки
+- при росте нагрузки нужен апгрейд тарифа
+
+## 9) Безопасность
+- Не публиковать токены/пароли.
+- Если секрет утек: сразу ротировать токен (BotFather) и пароль Redis (Upstash).
+
+## 10) Команды для сопровождения
+```bash
+# тесты
+source .venv/bin/activate && pytest -q
+
+# локальный запуск
+source .venv/bin/activate && python bot.py
+
+# завершить локальные процессы
+pkill -f "bot.py"
+```
