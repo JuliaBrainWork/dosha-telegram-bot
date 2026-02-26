@@ -22,7 +22,7 @@
 9. Настроен и подтвержден запуск на Railway (бот работает без включенного ноутбука).
 10. Создан и обновлен `PROJECT_WORKFLOW.md` как повторно используемый шаблон.
 11. Создана структура на Desktop:
-- `/Users/uliatihonova/Desktop/Телеграм-боты/`
+- `/Users/uliatihonova/Library/Containers/Mail.Ru.DiskO.as/Data/Disk-O.as.mounts/arven63@mail.ru-mailru/VS Code/Telegram-bots/`
 - внутри проект `dosha-telegram-bot` и шаблон workflow.
 
 ## Ключевые технические решения

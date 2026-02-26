@@ -19,13 +19,13 @@
 
 4. Если нужен новый похожий проект:
 - использовать шаблон:
-  `/Users/uliatihonova/Desktop/Телеграм-боты/PROJECT_WORKFLOW.md`
+  `/Users/uliatihonova/Library/Containers/Mail.Ru.DiskO.as/Data/Disk-O.as.mounts/arven63@mail.ru-mailru/VS Code/Telegram-bots/PROJECT_WORKFLOW.md`
 - в новом чате вставить готовый промпт из этого файла.
 
 ## Полезные команды локально
 
 ```bash
-cd "/Users/uliatihonova/Desktop/Телеграм-боты/dosha-telegram-bot"
+cd "/Users/uliatihonova/Library/Containers/Mail.Ru.DiskO.as/Data/Disk-O.as.mounts/arven63@mail.ru-mailru/VS Code/Telegram-bots/dosha-telegram-bot"
 source .venv/bin/activate
 pytest -q
 ```

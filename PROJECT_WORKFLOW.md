@@ -97,7 +97,7 @@ pkill -f "bot.py"
 
 ```text
 Используй как базовую схему файл:
-/Users/uliatihonova/Desktop/Телеграм-боты/PROJECT_WORKFLOW.md
+/Users/uliatihonova/Library/Containers/Mail.Ru.DiskO.as/Data/Disk-O.as.mounts/arven63@mail.ru-mailru/VS Code/Telegram-bots/PROJECT_WORKFLOW.md
 
 Новый проект: <название проекта>
 Папка проекта: <путь к папке>
@@ -116,7 +116,7 @@ pkill -f "bot.py"
 
 ```text
 Работаем по шаблону:
-/Users/uliatihonova/Desktop/Телеграм-боты/PROJECT_WORKFLOW.md
+/Users/uliatihonova/Library/Containers/Mail.Ru.DiskO.as/Data/Disk-O.as.mounts/arven63@mail.ru-mailru/VS Code/Telegram-bots/PROJECT_WORKFLOW.md
 
 Нужен проект: <описание>.
 Сделай всё под ключ: анализ -> правки -> проверка -> понятные шаги для меня.
