@@ -29,6 +29,7 @@
 - `REDIS_PASSWORD` - пароль, если не встроен в URL
 - `RETENTION_HOURS=24`
 - `WEBHOOK_SECRET` - нужен для Vercel webhook
+- `UPSTASH_REDIS_REST_URL` и `UPSTASH_REDIS_REST_TOKEN` - Redis для Vercel serverless
 
 ## 4) Прод-рантаймы
 - Railway: long polling worker, требует активного тарифа

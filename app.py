@@ -11,6 +11,7 @@ from redis.asyncio import Redis
 from config import Settings, load_settings
 from handlers.bot_handlers import build_router
 from storage.redis_repo import RedisRepo
+from storage.upstash_rest import UpstashRestRedis
 
 
 logging.basicConfig(level=logging.INFO)
@@ -39,6 +40,11 @@ def _bot() -> Bot:
 
 @lru_cache(maxsize=1)
 def _redis() -> Redis:
+    rest_url = os.getenv("UPSTASH_REDIS_REST_URL", "").strip()
+    rest_token = os.getenv("UPSTASH_REDIS_REST_TOKEN", "").strip()
+    if rest_url and rest_token:
+        return UpstashRestRedis(rest_url=rest_url, rest_token=rest_token)
+
     settings = _settings()
     return Redis.from_url(
         settings.redis_url,

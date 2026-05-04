@@ -103,10 +103,12 @@ python scripts/check_status.py
 
 Переменные Vercel:
 - `BOT_TOKEN`
-- `REDIS_URL`
-- `REDIS_PASSWORD` (если нужен)
 - `RETENTION_HOURS=24`
 - `WEBHOOK_SECRET` - длинная случайная строка
+- `UPSTASH_REDIS_REST_URL`
+- `UPSTASH_REDIS_REST_TOKEN`
+
+Для Vercel предпочтительно подключать Redis через Upstash REST API, а не TCP `REDIS_URL`.
 
 После деплоя:
 ```bash
