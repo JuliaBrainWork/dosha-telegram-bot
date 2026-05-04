@@ -28,6 +28,7 @@
 - `REDIS_PASSWORD` - пароль, если не встроен в URL
 - `RETENTION_HOURS=24`
 - `WEBHOOK_SECRET` - нужен для Vercel webhook
+- `SETUP_TOKEN` - нужен для защищенной установки webhook через Vercel runtime
 - `KV_REST_API_URL` и `KV_REST_API_TOKEN` - Redis для Vercel serverless
 - `UPSTASH_REDIS_REST_API_URL`/`UPSTASH_REDIS_REST_API_TOKEN` или
   `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` - альтернативные имена Upstash REST

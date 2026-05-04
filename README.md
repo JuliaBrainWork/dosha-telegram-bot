@@ -105,6 +105,7 @@ python scripts/check_status.py
 - `BOT_TOKEN`
 - `RETENTION_HOURS=24`
 - `WEBHOOK_SECRET` - длинная случайная строка
+- `SETUP_TOKEN` - отдельная длинная строка для защищенной установки webhook
 - `KV_REST_API_URL`
 - `KV_REST_API_TOKEN`
 

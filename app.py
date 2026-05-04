@@ -1,7 +1,9 @@
 import logging
 import os
 from functools import lru_cache
+from urllib.parse import quote
 
+import aiohttp
 import certifi
 from aiogram import Bot, Dispatcher
 from aiogram.types import Update
@@ -31,6 +33,14 @@ def _webhook_secret() -> str:
     if not secret:
         raise ValueError("WEBHOOK_SECRET is required for webhook mode")
     return secret
+
+
+@lru_cache(maxsize=1)
+def _setup_token() -> str:
+    token = os.getenv("SETUP_TOKEN", "").strip()
+    if not token:
+        raise ValueError("SETUP_TOKEN is required for admin setup")
+    return token
 
 
 @lru_cache(maxsize=1)
@@ -101,3 +111,33 @@ async def telegram_webhook(
     update = Update.model_validate(data, context={"bot": _bot()})
     await _dispatcher().feed_update(_bot(), update)
     return {"ok": True}
+
+
+@app.post("/admin/set-webhook/{setup_token}")
+async def set_webhook(setup_token: str, request: Request) -> dict[str, str | bool]:
+    if setup_token != _setup_token():
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    base_url = str(request.base_url).rstrip("/")
+    secret = _webhook_secret()
+    webhook_url = f"{base_url}/webhook/{quote(secret, safe='')}"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            f"https://api.telegram.org/bot{_settings().bot_token}/setWebhook",
+            json={
+                "url": webhook_url,
+                "secret_token": secret,
+                "drop_pending_updates": False,
+            },
+            timeout=aiohttp.ClientTimeout(total=20),
+        ) as response:
+            payload = await response.json()
+
+    if not payload.get("ok"):
+        raise HTTPException(
+            status_code=502,
+            detail=payload.get("description", "Telegram setWebhook failed"),
+        )
+
+    return {"ok": True, "webhook": "configured", "base_url": base_url}
