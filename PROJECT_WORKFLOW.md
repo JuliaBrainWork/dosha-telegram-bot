@@ -10,6 +10,7 @@
 
 ## 2) Структура проекта
 - `bot.py` - запуск приложения
+- `app.py` - webhook-приложение для Vercel
 - `config.py` - чтение env
 - `handlers/bot_handlers.py` - сценарий бота
 - `core/scoring.py` - подсчет
@@ -18,18 +19,22 @@
 - `data/questions.json` - вопросы
 - `render.yaml` - конфиг Render (оставлен как reference)
 - `railway.json` - явный старт `python bot.py` для Railway
+- `vercel.json` - конфиг бесплатного webhook-деплоя на Vercel
 - `scripts/check_status.py` - локальная диагностика без вывода секретов
+- `scripts/set_webhook.py` - установка Telegram webhook после деплоя
 
 ## 3) Переменные окружения
 - `BOT_TOKEN` - токен Telegram-бота
 - `REDIS_URL` - Redis URL (`rediss://...`)
 - `REDIS_PASSWORD` - пароль, если не встроен в URL
 - `RETENTION_HOURS=24`
+- `WEBHOOK_SECRET` - нужен для Vercel webhook
 
-## 4) Текущий прод-рантайм
-- Хостинг: Railway
+## 4) Прод-рантаймы
+- Railway: long polling worker, требует активного тарифа
+- Vercel: webhook, подходит для бесплатного Hobby-режима
 - База: Upstash Redis
-- Режим: long polling
+- Режим: long polling или webhook
 
 ## 5) Локальный запуск
 ```bash

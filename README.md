@@ -97,6 +97,27 @@ python scripts/check_status.py
 Скрипт показывает, запущен ли локальный процесс, заданы ли env-переменные,
 а при наличии `BOT_TOKEN` проверяет `getMe` и `getWebhookInfo` Telegram Bot API.
 
+## Бесплатный деплой на Vercel через webhook
+Для бесплатного запуска без always-on worker можно использовать Vercel Hobby.
+В этом режиме Telegram отправляет обновления на HTTPS webhook, а не через long polling.
+
+Переменные Vercel:
+- `BOT_TOKEN`
+- `REDIS_URL`
+- `REDIS_PASSWORD` (если нужен)
+- `RETENTION_HOURS=24`
+- `WEBHOOK_SECRET` - длинная случайная строка
+
+После деплоя:
+```bash
+VERCEL_URL="https://your-project.vercel.app" python scripts/set_webhook.py
+```
+
+Проверка:
+```bash
+curl https://your-project.vercel.app/health
+```
+
 ## Бесплатный деплой на Render (для новичка)
 1. Зарегистрируйся на `render.com`:
 - Нажми `Get Started`.
