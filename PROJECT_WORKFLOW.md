@@ -19,7 +19,6 @@
 - `data/questions.json` - вопросы
 - `render.yaml` - конфиг Render (оставлен как reference)
 - `railway.json` - явный старт `python bot.py` для Railway
-- `vercel.json` - конфиг бесплатного webhook-деплоя на Vercel
 - `scripts/check_status.py` - локальная диагностика без вывода секретов
 - `scripts/set_webhook.py` - установка Telegram webhook после деплоя
 
@@ -29,7 +28,9 @@
 - `REDIS_PASSWORD` - пароль, если не встроен в URL
 - `RETENTION_HOURS=24`
 - `WEBHOOK_SECRET` - нужен для Vercel webhook
-- `UPSTASH_REDIS_REST_URL` и `UPSTASH_REDIS_REST_TOKEN` - Redis для Vercel serverless
+- `KV_REST_API_URL` и `KV_REST_API_TOKEN` - Redis для Vercel serverless
+- `UPSTASH_REDIS_REST_API_URL`/`UPSTASH_REDIS_REST_API_TOKEN` или
+  `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` - альтернативные имена Upstash REST
 
 ## 4) Прод-рантаймы
 - Railway: long polling worker, требует активного тарифа

@@ -40,8 +40,16 @@ def _bot() -> Bot:
 
 @lru_cache(maxsize=1)
 def _redis() -> Redis:
-    rest_url = os.getenv("UPSTASH_REDIS_REST_URL", "").strip()
-    rest_token = os.getenv("UPSTASH_REDIS_REST_TOKEN", "").strip()
+    rest_url = (
+        os.getenv("KV_REST_API_URL", "").strip()
+        or os.getenv("UPSTASH_REDIS_REST_API_URL", "").strip()
+        or os.getenv("UPSTASH_REDIS_REST_URL", "").strip()
+    )
+    rest_token = (
+        os.getenv("KV_REST_API_TOKEN", "").strip()
+        or os.getenv("UPSTASH_REDIS_REST_API_TOKEN", "").strip()
+        or os.getenv("UPSTASH_REDIS_REST_TOKEN", "").strip()
+    )
     if rest_url and rest_token:
         return UpstashRestRedis(rest_url=rest_url, rest_token=rest_token)
 

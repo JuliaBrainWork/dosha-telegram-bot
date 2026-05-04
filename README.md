@@ -6,7 +6,7 @@
 
 ## Что реализовано
 - `Python + aiogram`
-- `Long polling`
+- `Long polling` локально/Railway и `webhook` на Vercel
 - Хранение сессии в Redis с TTL (`24 часа` по умолчанию)
 - Режимы:
   - `Пракрити`: как было стабильно много лет (ориентир 0-12 лет)
@@ -105,10 +105,13 @@ python scripts/check_status.py
 - `BOT_TOKEN`
 - `RETENTION_HOURS=24`
 - `WEBHOOK_SECRET` - длинная случайная строка
-- `UPSTASH_REDIS_REST_URL`
-- `UPSTASH_REDIS_REST_TOKEN`
+- `KV_REST_API_URL`
+- `KV_REST_API_TOKEN`
 
 Для Vercel предпочтительно подключать Redis через Upstash REST API, а не TCP `REDIS_URL`.
+Если Redis подключен не через Vercel Storage, также поддерживаются
+`UPSTASH_REDIS_REST_API_URL`/`UPSTASH_REDIS_REST_API_TOKEN` и
+`UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN`.
 
 После деплоя:
 ```bash
