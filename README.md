@@ -53,6 +53,13 @@ cp .env.example .env
 python bot.py
 ```
 
+Если проект лежит в облачной папке и `.venv` не создается из-за ошибки `lib64`,
+можно запускать проверки через `uv`:
+```bash
+uv run --with-requirements requirements.txt python -m pytest -q
+uv run --with-requirements requirements.txt python scripts/check_status.py
+```
+
 ## Проверка дубликатов процесса
 Если видишь ошибку `TelegramConflictError`, проверь, не запущено ли несколько копий бота:
 ```bash
@@ -81,6 +88,14 @@ pytest -q
 /health
 ```
 Показывает uptime, статус Redis и текущий TTL хранения.
+
+Локальная диагностика без вывода секретов:
+```bash
+python scripts/check_status.py
+```
+
+Скрипт показывает, запущен ли локальный процесс, заданы ли env-переменные,
+а при наличии `BOT_TOKEN` проверяет `getMe` и `getWebhookInfo` Telegram Bot API.
 
 ## Бесплатный деплой на Render (для новичка)
 1. Зарегистрируйся на `render.com`:

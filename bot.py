@@ -30,7 +30,9 @@ async def main() -> None:
     dp.include_router(build_router(repo))
 
     try:
-        await dp.start_polling(bot)
+        await bot.delete_webhook(drop_pending_updates=False)
+        logging.info("Starting bot in long polling mode")
+        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:
         await bot.session.close()
         await redis.close()

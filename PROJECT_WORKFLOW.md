@@ -17,6 +17,8 @@
 - `storage/redis_repo.py` - Redis-сессии
 - `data/questions.json` - вопросы
 - `render.yaml` - конфиг Render (оставлен как reference)
+- `railway.json` - явный старт `python bot.py` для Railway
+- `scripts/check_status.py` - локальная диагностика без вывода секретов
 
 ## 3) Переменные окружения
 - `BOT_TOKEN` - токен Telegram-бота
@@ -34,6 +36,12 @@
 cd "<путь_к_проекту>"
 source .venv/bin/activate
 python bot.py
+```
+
+Если `.venv` не создается внутри облачной папки:
+```bash
+uv run --with-requirements requirements.txt python -m pytest -q
+uv run --with-requirements requirements.txt python scripts/check_status.py
 ```
 
 ## 6) Проверка что работает
@@ -84,6 +92,9 @@ ps ax -o pid=,command= | grep bot.py | grep -v grep
 ```bash
 # тесты
 source .venv/bin/activate && pytest -q
+
+# диагностика статуса локально
+python scripts/check_status.py
 
 # локальный запуск
 source .venv/bin/activate && python bot.py
