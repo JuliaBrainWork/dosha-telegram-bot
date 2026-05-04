@@ -36,11 +36,9 @@ def _webhook_secret() -> str:
 
 
 @lru_cache(maxsize=1)
-def _setup_token() -> str:
+def _setup_token() -> str | None:
     token = os.getenv("SETUP_TOKEN", "").strip()
-    if not token:
-        raise ValueError("SETUP_TOKEN is required for admin setup")
-    return token
+    return token or None
 
 
 @lru_cache(maxsize=1)
@@ -115,7 +113,8 @@ async def telegram_webhook(
 
 @app.post("/admin/set-webhook/{setup_token}")
 async def set_webhook(setup_token: str, request: Request) -> dict[str, str | bool]:
-    if setup_token != _setup_token():
+    expected_setup_token = _setup_token()
+    if not expected_setup_token or setup_token != expected_setup_token:
         raise HTTPException(status_code=403, detail="Forbidden")
 
     base_url = str(request.base_url).rstrip("/")
